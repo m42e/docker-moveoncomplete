@@ -21,7 +21,7 @@ name: docker_username
 get:
   path: kv/data/drone/docker
   name: username
-  ---
+---
 
 kind: secret
 name: docker_password
