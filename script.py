@@ -20,7 +20,7 @@ def _main():
     lastcount = 0
 
     print('Looking for existing files in in')
-    for dirpath, dirnames, filenames in os.walk(config['dirs']['from']):
+    for dirpath, _, filenames in os.walk(config['dirs']['from']):
         for f in filenames:
             print('found {}'.format(f))
             files[dirpath + f] = {
@@ -59,19 +59,19 @@ def _main():
         if 'IN_DELETE' in type_names:
             print('removed file {}/{}'.format(path, filename))
             if fname in files:
-                del files[path + filename]
+                del files[fname]
             continue
 
         if not any(filter(lambda x: x in ['IN_MODIFY', 'IN_CREATE'], type_names)):
             continue
 
-        print("PATH=[{}] FILENAME=[{}] EVENT_TYPES={}".format( path, filename, type_names))
-
-        files[path + filename] = {
-            'path': path,
-            'filename': filename,
-            'time': time.time()
-        }
+        if fname in files:
+            print("PATH=[{}] FILENAME=[{}] EVENT_TYPES={}".format( path, filename, type_names))
+            files[fname] = {
+                'path': path,
+                'filename': filename,
+            }
+        files[fname]['time'] = time.time()
 
 
 if __name__ == '__main__':
