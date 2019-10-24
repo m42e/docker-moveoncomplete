@@ -1,17 +1,13 @@
 #!/bin/sh
 
-DEFAULT_USER_UID=1000
-DEFAULT_USER_GID=1000
+DEFAULT_UID=1000
+DEFAULT_GID=1000
 
-MAYAN_USER_UID=${MAYAN_USER_UID:-${DEFAULT_USER_UID}}
-MAYAN_USER_GID=${MAYAN_USER_GID:-${DEFAULT_USER_GID}}
+COPYUSER_UID=${COPYUSER_UID:-${DEFAULT_UID}}
+COPYUSER_GID=${COPYUSER_GID:-${DEFAULT_GID}}
 
-update_uid_gid() {
-    groupmod mayan -g ${MAYAN_USER_GID} 2>/dev/null || true
-    usermod mayan -u ${MAYAN_USER_UID} -g ${MAYAN_USER_GID} 2>/dev/null
-		chown -R mayan:mayan /in /out 
-}
+groupmod copyuser -g ${COPYUSER_GID} 2>/dev/null || true
+usermod copyuser -u ${COPYUSER_UID} -g ${COPYUSER_GID} 2>/dev/null
+chown -R copyuser:copyuser /in /out 
 
-update_uid_gid
-
-su mayan -c "python -u /script.py"
+su copyuser -c "python -u /script.py"
