@@ -9,10 +9,10 @@ I am using it in combination with [Mayan-EDMS](https://mayan-edms.com). The docu
 
 ## How?
 
-This docker image registers for inotify events in a [folder structure](#IWATCH_FROM). If there is anything written in that structure it keeps an entry with the filepath and the last time it has been written.
+This docker image registers for inotify events in a [folder structure (IWATCH_FROM)](#IWATCH_FROM). If there is anything written in that structure it keeps an entry with the filepath and the last time it has been written.
 Every time an event like MODIFY or CREATE happens the entry is updated.
-The inotify events created also contain `None` events. These occur after a configurable [timeout](#IWATCH_TIMEOUT).
-If there are no events for a time period longer or equal the [timeout](#IWATCH_TIMEOUT) the file is moved to the (target folder)[#IWATCH_TO]. 
+The inotify events created also contain `None` events. These occur after a configurable [timeout(IWATCH_TIMEOUT)](#IWATCH_TIMEOUT).
+If there are no events for a time period longer or equal the [timeout](#IWATCH_TIMEOUT) the file is moved to the [target folder (IWATCH_TO)](#IWATCH_TO). 
 
 
 ## Usage
@@ -30,6 +30,11 @@ Folder to move files to. (default: `/out`)
 ### IWATCH_TIMEOUT
 
 Timeout to wait for further changes (default: 30 Seconds).
+
+
+### COPYUSER_UID/COPYUSER_GID
+
+User id of the file owner. The docker container ensures that all folders are writeable by setting this user/group as owner for input and output folder. (default: 1000)
 
 
 ### Docker commandline
