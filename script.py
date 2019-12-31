@@ -13,23 +13,31 @@ config = {
     'timeout': int(os.getenv('IWATCH_TIMEOUT', 30)),
 }
 
+loglines = ['']
+
+def log(line):
+    if logline == loglines[-1]:
+        return
+    print(line)
+    loglines[-1] = line
+
 def _main():
     i = inotify.adapters.InotifyTree(config['dirs']['from'])
 
     files = {}
     lastcount = 0
 
-    print('Looking for existing files in in')
+    log('Looking for existing files in in')
     for dirpath, _, filenames in os.walk(config['dirs']['from']):
         for f in filenames:
-            print('found {}'.format(f))
+            log('found {}'.format(f))
             files[dirpath + f] = {
                 'path': dirpath,
                 'filename': f,
                 'time': time.time()
             }
 
-    print('waiting for events')
+    log('waiting for events')
     for event in i.event_gen(yield_nones=True):
         if event is None:
             completed = []
@@ -42,13 +50,13 @@ def _main():
                     if config['action'] == 'move':
                         tpath = fpath.replace(config['dirs']['from'], config['dirs']['to'])
                         shutil.move(fpath, tpath)
-                        print('moved {}'.format(fpath))
+                        log('moved {}'.format(fpath))
                     else:
-                        print('action unknown')
+                        log('action unknown')
             for filename in completed:
                 del files[filename]
             if len(files) != lastcount:
-                print('waiting for {} files to be completed'.format(len(files)))
+                log('waiting for {} files to be completed'.format(len(files)))
                 lastcount = len(files)
             continue
         (_, type_names, path, filename) = event
@@ -57,7 +65,7 @@ def _main():
 
         fname = path + filename 
         if 'IN_DELETE' in type_names:
-            print('removed file {}/{}'.format(path, filename))
+            log('removed file {}/{}'.format(path, filename))
             if fname in files:
                 del files[fname]
             continue
@@ -66,7 +74,7 @@ def _main():
             continue
 
         if fname in files:
-            print("PATH=[{}] FILENAME=[{}] EVENT_TYPES={}".format( path, filename, type_names))
+            log("PATH=[{}] FILENAME=[{}] EVENT_TYPES={}".format( path, filename, type_names))
             files[fname] = {
                 'path': path,
                 'filename': filename,
