@@ -16,7 +16,7 @@ config = {
 loglines = ['']
 
 def log(line):
-    if logline == loglines[-1]:
+    if line == loglines[-1]:
         return
     print(line)
     loglines[-1] = line
